@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2020-2025 EMQ Technologies Co., Ltd. All Rights Reserved.
+// Copyright (c) 2020-2023 EMQ Technologies Co., Ltd. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,10 +20,8 @@
 // 	protoc        (unknown)
 // source: proto/exhook.proto
 
-// Please make sure the exhook proto version is compatible
-// with the EMQX version
-// v3: EMQX 5.9.0+
-// v2: EMQX 5.0-5.8.x
+// The exhook proto version should be fixed as `v2` in EMQX v5.x
+// to make sure the exhook proto version is compatible
 
 package exhook
 
@@ -245,7 +243,6 @@ type ClientConnectRequest struct {
 	// It should be empty on MQTT v3.1.1/v3.1 or others protocol
 	Props         []*Property  `protobuf:"bytes,2,rep,name=props,proto3" json:"props,omitempty"`
 	Meta          *RequestMeta `protobuf:"bytes,3,opt,name=meta,proto3" json:"meta,omitempty"`
-	UserProps     []*Property  `protobuf:"bytes,4,rep,name=user_props,json=userProps,proto3" json:"user_props,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -301,20 +298,12 @@ func (x *ClientConnectRequest) GetMeta() *RequestMeta {
 	return nil
 }
 
-func (x *ClientConnectRequest) GetUserProps() []*Property {
-	if x != nil {
-		return x.UserProps
-	}
-	return nil
-}
-
 type ClientConnackRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Conninfo      *ConnInfo              `protobuf:"bytes,1,opt,name=conninfo,proto3" json:"conninfo,omitempty"`
 	ResultCode    string                 `protobuf:"bytes,2,opt,name=result_code,json=resultCode,proto3" json:"result_code,omitempty"`
 	Props         []*Property            `protobuf:"bytes,3,rep,name=props,proto3" json:"props,omitempty"`
 	Meta          *RequestMeta           `protobuf:"bytes,4,opt,name=meta,proto3" json:"meta,omitempty"`
-	UserProps     []*Property            `protobuf:"bytes,5,rep,name=user_props,json=userProps,proto3" json:"user_props,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -373,13 +362,6 @@ func (x *ClientConnackRequest) GetProps() []*Property {
 func (x *ClientConnackRequest) GetMeta() *RequestMeta {
 	if x != nil {
 		return x.Meta
-	}
-	return nil
-}
-
-func (x *ClientConnackRequest) GetUserProps() []*Property {
-	if x != nil {
-		return x.UserProps
 	}
 	return nil
 }
@@ -559,7 +541,7 @@ func (x *ClientAuthenticateRequest) GetMeta() *RequestMeta {
 type ClientAuthorizeRequest struct {
 	state      protoimpl.MessageState                  `protogen:"open.v1"`
 	Clientinfo *ClientInfo                             `protobuf:"bytes,1,opt,name=clientinfo,proto3" json:"clientinfo,omitempty"`
-	Type       ClientAuthorizeRequest_AuthorizeReqType `protobuf:"varint,2,opt,name=type,proto3,enum=emqx.exhook.v3.ClientAuthorizeRequest_AuthorizeReqType" json:"type,omitempty"`
+	Type       ClientAuthorizeRequest_AuthorizeReqType `protobuf:"varint,2,opt,name=type,proto3,enum=emqx.exhook.v2.ClientAuthorizeRequest_AuthorizeReqType" json:"type,omitempty"`
 	// In ClientAuthorizeRequest.
 	// Only "real-topic" will be serialized in gRPC request when shared-sub.
 	// For example, when client subscribes to `$share/group/t/1`, the real topic is `t/1`.
@@ -641,7 +623,6 @@ type ClientSubscribeRequest struct {
 	Props         []*Property            `protobuf:"bytes,2,rep,name=props,proto3" json:"props,omitempty"`
 	TopicFilters  []*TopicFilter         `protobuf:"bytes,3,rep,name=topic_filters,json=topicFilters,proto3" json:"topic_filters,omitempty"`
 	Meta          *RequestMeta           `protobuf:"bytes,4,opt,name=meta,proto3" json:"meta,omitempty"`
-	UserProps     []*Property            `protobuf:"bytes,5,rep,name=user_props,json=userProps,proto3" json:"user_props,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -704,20 +685,12 @@ func (x *ClientSubscribeRequest) GetMeta() *RequestMeta {
 	return nil
 }
 
-func (x *ClientSubscribeRequest) GetUserProps() []*Property {
-	if x != nil {
-		return x.UserProps
-	}
-	return nil
-}
-
 type ClientUnsubscribeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Clientinfo    *ClientInfo            `protobuf:"bytes,1,opt,name=clientinfo,proto3" json:"clientinfo,omitempty"`
 	Props         []*Property            `protobuf:"bytes,2,rep,name=props,proto3" json:"props,omitempty"`
 	TopicFilters  []*TopicFilter         `protobuf:"bytes,3,rep,name=topic_filters,json=topicFilters,proto3" json:"topic_filters,omitempty"`
 	Meta          *RequestMeta           `protobuf:"bytes,4,opt,name=meta,proto3" json:"meta,omitempty"`
-	UserProps     []*Property            `protobuf:"bytes,5,rep,name=user_props,json=userProps,proto3" json:"user_props,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -776,13 +749,6 @@ func (x *ClientUnsubscribeRequest) GetTopicFilters() []*TopicFilter {
 func (x *ClientUnsubscribeRequest) GetMeta() *RequestMeta {
 	if x != nil {
 		return x.Meta
-	}
-	return nil
-}
-
-func (x *ClientUnsubscribeRequest) GetUserProps() []*Property {
-	if x != nil {
-		return x.UserProps
 	}
 	return nil
 }
@@ -1187,8 +1153,6 @@ type MessagePublishRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       *Message               `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	Meta          *RequestMeta           `protobuf:"bytes,2,opt,name=meta,proto3" json:"meta,omitempty"`
-	Props         []*Property            `protobuf:"bytes,3,rep,name=props,proto3" json:"props,omitempty"`
-	UserProps     []*Property            `protobuf:"bytes,4,rep,name=user_props,json=userProps,proto3" json:"user_props,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1233,20 +1197,6 @@ func (x *MessagePublishRequest) GetMessage() *Message {
 func (x *MessagePublishRequest) GetMeta() *RequestMeta {
 	if x != nil {
 		return x.Meta
-	}
-	return nil
-}
-
-func (x *MessagePublishRequest) GetProps() []*Property {
-	if x != nil {
-		return x.Props
-	}
-	return nil
-}
-
-func (x *MessagePublishRequest) GetUserProps() []*Property {
-	if x != nil {
-		return x.UserProps
 	}
 	return nil
 }
@@ -1477,7 +1427,7 @@ func (x *LoadedResponse) GetHooks() []*HookSpec {
 
 type ValuedResponse struct {
 	state protoimpl.MessageState       `protogen:"open.v1"`
-	Type  ValuedResponse_ResponsedType `protobuf:"varint,1,opt,name=type,proto3,enum=emqx.exhook.v3.ValuedResponse_ResponsedType" json:"type,omitempty"`
+	Type  ValuedResponse_ResponsedType `protobuf:"varint,1,opt,name=type,proto3,enum=emqx.exhook.v2.ValuedResponse_ResponsedType" json:"type,omitempty"`
 	// Types that are valid to be assigned to Value:
 	//
 	//	*ValuedResponse_BoolResult
@@ -2377,140 +2327,129 @@ var File_proto_exhook_proto protoreflect.FileDescriptor
 
 const file_proto_exhook_proto_rawDesc = "" +
 	"\n" +
-	"\x12proto/exhook.proto\x12\x0eemqx.exhook.v3\"|\n" +
+	"\x12proto/exhook.proto\x12\x0eemqx.exhook.v2\"|\n" +
 	"\x15ProviderLoadedRequest\x122\n" +
-	"\x06broker\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.BrokerInfoR\x06broker\x12/\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"J\n" +
+	"\x06broker\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.BrokerInfoR\x06broker\x12/\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"J\n" +
 	"\x17ProviderUnloadedRequest\x12/\n" +
-	"\x04meta\x18\x01 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\xe6\x01\n" +
+	"\x04meta\x18\x01 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xad\x01\n" +
 	"\x14ClientConnectRequest\x124\n" +
-	"\bconninfo\x18\x01 \x01(\v2\x18.emqx.exhook.v3.ConnInfoR\bconninfo\x12.\n" +
-	"\x05props\x18\x02 \x03(\v2\x18.emqx.exhook.v3.PropertyR\x05props\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\x127\n" +
-	"\n" +
-	"user_props\x18\x04 \x03(\v2\x18.emqx.exhook.v3.PropertyR\tuserProps\"\x87\x02\n" +
+	"\bconninfo\x18\x01 \x01(\v2\x18.emqx.exhook.v2.ConnInfoR\bconninfo\x12.\n" +
+	"\x05props\x18\x02 \x03(\v2\x18.emqx.exhook.v2.PropertyR\x05props\x12/\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xce\x01\n" +
 	"\x14ClientConnackRequest\x124\n" +
-	"\bconninfo\x18\x01 \x01(\v2\x18.emqx.exhook.v3.ConnInfoR\bconninfo\x12\x1f\n" +
+	"\bconninfo\x18\x01 \x01(\v2\x18.emqx.exhook.v2.ConnInfoR\bconninfo\x12\x1f\n" +
 	"\vresult_code\x18\x02 \x01(\tR\n" +
 	"resultCode\x12.\n" +
-	"\x05props\x18\x03 \x03(\v2\x18.emqx.exhook.v3.PropertyR\x05props\x12/\n" +
-	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\x127\n" +
-	"\n" +
-	"user_props\x18\x05 \x03(\v2\x18.emqx.exhook.v3.PropertyR\tuserProps\"\x85\x01\n" +
+	"\x05props\x18\x03 \x03(\v2\x18.emqx.exhook.v2.PropertyR\x05props\x12/\n" +
+	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x85\x01\n" +
 	"\x16ClientConnectedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12/\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\xa0\x01\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xa0\x01\n" +
 	"\x19ClientDisconnectedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\xa0\x01\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xa0\x01\n" +
 	"\x19ClientAuthenticateRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12\x16\n" +
 	"\x06result\x18\x02 \x01(\bR\x06result\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\xb0\x02\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xb0\x02\n" +
 	"\x16ClientAuthorizeRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12K\n" +
-	"\x04type\x18\x02 \x01(\x0e27.emqx.exhook.v3.ClientAuthorizeRequest.AuthorizeReqTypeR\x04type\x12\x14\n" +
+	"\x04type\x18\x02 \x01(\x0e27.emqx.exhook.v2.ClientAuthorizeRequest.AuthorizeReqTypeR\x04type\x12\x14\n" +
 	"\x05topic\x18\x03 \x01(\tR\x05topic\x12\x16\n" +
 	"\x06result\x18\x04 \x01(\bR\x06result\x12/\n" +
-	"\x04meta\x18\x05 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\".\n" +
+	"\x04meta\x18\x05 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\".\n" +
 	"\x10AuthorizeReqType\x12\v\n" +
 	"\aPUBLISH\x10\x00\x12\r\n" +
-	"\tSUBSCRIBE\x10\x01\"\xb0\x02\n" +
+	"\tSUBSCRIBE\x10\x01\"\xf7\x01\n" +
 	"\x16ClientSubscribeRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12.\n" +
-	"\x05props\x18\x02 \x03(\v2\x18.emqx.exhook.v3.PropertyR\x05props\x12@\n" +
-	"\rtopic_filters\x18\x03 \x03(\v2\x1b.emqx.exhook.v3.TopicFilterR\ftopicFilters\x12/\n" +
-	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\x127\n" +
-	"\n" +
-	"user_props\x18\x05 \x03(\v2\x18.emqx.exhook.v3.PropertyR\tuserProps\"\xb2\x02\n" +
+	"\x05props\x18\x02 \x03(\v2\x18.emqx.exhook.v2.PropertyR\x05props\x12@\n" +
+	"\rtopic_filters\x18\x03 \x03(\v2\x1b.emqx.exhook.v2.TopicFilterR\ftopicFilters\x12/\n" +
+	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xf9\x01\n" +
 	"\x18ClientUnsubscribeRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12.\n" +
-	"\x05props\x18\x02 \x03(\v2\x18.emqx.exhook.v3.PropertyR\x05props\x12@\n" +
-	"\rtopic_filters\x18\x03 \x03(\v2\x1b.emqx.exhook.v3.TopicFilterR\ftopicFilters\x12/\n" +
-	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\x127\n" +
-	"\n" +
-	"user_props\x18\x05 \x03(\v2\x18.emqx.exhook.v3.PropertyR\tuserProps\"\x84\x01\n" +
+	"\x05props\x18\x02 \x03(\v2\x18.emqx.exhook.v2.PropertyR\x05props\x12@\n" +
+	"\rtopic_filters\x18\x03 \x03(\v2\x1b.emqx.exhook.v2.TopicFilterR\ftopicFilters\x12/\n" +
+	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x84\x01\n" +
 	"\x15SessionCreatedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12/\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\xd0\x01\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xd0\x01\n" +
 	"\x18SessionSubscribedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12\x14\n" +
 	"\x05topic\x18\x02 \x01(\tR\x05topic\x121\n" +
-	"\asubopts\x18\x03 \x01(\v2\x17.emqx.exhook.v3.SubOptsR\asubopts\x12/\n" +
-	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\x9f\x01\n" +
+	"\asubopts\x18\x03 \x01(\v2\x17.emqx.exhook.v2.SubOptsR\asubopts\x12/\n" +
+	"\x04meta\x18\x04 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x9f\x01\n" +
 	"\x1aSessionUnsubscribedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12\x14\n" +
 	"\x05topic\x18\x02 \x01(\tR\x05topic\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\x84\x01\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x84\x01\n" +
 	"\x15SessionResumedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12/\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\x86\x01\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x86\x01\n" +
 	"\x17SessionDiscardedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12/\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\x86\x01\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x86\x01\n" +
 	"\x17SessionTakenoverRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12/\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\x9f\x01\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x9f\x01\n" +
 	"\x18SessionTerminatedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\xe4\x01\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"{\n" +
 	"\x15MessagePublishRequest\x121\n" +
-	"\amessage\x18\x01 \x01(\v2\x17.emqx.exhook.v3.MessageR\amessage\x12/\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\x12.\n" +
-	"\x05props\x18\x03 \x03(\v2\x18.emqx.exhook.v3.PropertyR\x05props\x127\n" +
-	"\n" +
-	"user_props\x18\x04 \x03(\v2\x18.emqx.exhook.v3.PropertyR\tuserProps\"\xb9\x01\n" +
+	"\amessage\x18\x01 \x01(\v2\x17.emqx.exhook.v2.MessageR\amessage\x12/\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xb9\x01\n" +
 	"\x17MessageDeliveredRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x121\n" +
-	"\amessage\x18\x02 \x01(\v2\x17.emqx.exhook.v3.MessageR\amessage\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\x93\x01\n" +
+	"\amessage\x18\x02 \x01(\v2\x17.emqx.exhook.v2.MessageR\amessage\x12/\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\x93\x01\n" +
 	"\x15MessageDroppedRequest\x121\n" +
-	"\amessage\x18\x01 \x01(\v2\x17.emqx.exhook.v3.MessageR\amessage\x12\x16\n" +
+	"\amessage\x18\x01 \x01(\v2\x17.emqx.exhook.v2.MessageR\amessage\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"\xb5\x01\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"\xb5\x01\n" +
 	"\x13MessageAckedRequest\x12:\n" +
 	"\n" +
-	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v3.ClientInfoR\n" +
+	"clientinfo\x18\x01 \x01(\v2\x1a.emqx.exhook.v2.ClientInfoR\n" +
 	"clientinfo\x121\n" +
-	"\amessage\x18\x02 \x01(\v2\x17.emqx.exhook.v3.MessageR\amessage\x12/\n" +
-	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v3.RequestMetaR\x04meta\"@\n" +
+	"\amessage\x18\x02 \x01(\v2\x17.emqx.exhook.v2.MessageR\amessage\x12/\n" +
+	"\x04meta\x18\x03 \x01(\v2\x1b.emqx.exhook.v2.RequestMetaR\x04meta\"@\n" +
 	"\x0eLoadedResponse\x12.\n" +
-	"\x05hooks\x18\x01 \x03(\v2\x18.emqx.exhook.v3.HookSpecR\x05hooks\"\xf3\x01\n" +
+	"\x05hooks\x18\x01 \x03(\v2\x18.emqx.exhook.v2.HookSpecR\x05hooks\"\xf3\x01\n" +
 	"\x0eValuedResponse\x12@\n" +
-	"\x04type\x18\x01 \x01(\x0e2,.emqx.exhook.v3.ValuedResponse.ResponsedTypeR\x04type\x12!\n" +
+	"\x04type\x18\x01 \x01(\x0e2,.emqx.exhook.v2.ValuedResponse.ResponsedTypeR\x04type\x12!\n" +
 	"\vbool_result\x18\x03 \x01(\bH\x00R\n" +
 	"boolResult\x123\n" +
-	"\amessage\x18\x04 \x01(\v2\x17.emqx.exhook.v3.MessageH\x00R\amessage\">\n" +
+	"\amessage\x18\x04 \x01(\v2\x17.emqx.exhook.v2.MessageH\x00R\amessage\">\n" +
 	"\rResponsedType\x12\f\n" +
 	"\bCONTINUE\x10\x00\x12\n" +
 	"\n" +
@@ -2564,7 +2503,7 @@ const file_proto_exhook_proto_rawDesc = "" +
 	"\x05topic\x18\x05 \x01(\tR\x05topic\x12\x18\n" +
 	"\apayload\x18\x06 \x01(\fR\apayload\x12\x1c\n" +
 	"\ttimestamp\x18\a \x01(\x04R\ttimestamp\x12>\n" +
-	"\aheaders\x18\b \x03(\v2$.emqx.exhook.v3.Message.HeadersEntryR\aheaders\x1a:\n" +
+	"\aheaders\x18\b \x03(\v2$.emqx.exhook.v2.Message.HeadersEntryR\aheaders\x1a:\n" +
 	"\fHeadersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"4\n" +
@@ -2573,7 +2512,7 @@ const file_proto_exhook_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value\"_\n" +
 	"\vTopicFilter\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x121\n" +
-	"\asubopts\x18\x03 \x01(\v2\x17.emqx.exhook.v3.SubOptsR\asuboptsJ\x04\b\x02\x10\x03R\x03qos\"Z\n" +
+	"\asubopts\x18\x03 \x01(\v2\x17.emqx.exhook.v2.SubOptsR\asuboptsJ\x04\b\x02\x10\x03R\x03qos\"Z\n" +
 	"\aSubOpts\x12\x10\n" +
 	"\x03qos\x18\x01 \x01(\rR\x03qos\x12\x0e\n" +
 	"\x02rh\x18\x03 \x01(\rR\x02rh\x12\x10\n" +
@@ -2585,28 +2524,28 @@ const file_proto_exhook_proto_rawDesc = "" +
 	"\bsysdescr\x18\x03 \x01(\tR\bsysdescr\x12!\n" +
 	"\fcluster_name\x18\x04 \x01(\tR\vclusterName2\xc7\x0f\n" +
 	"\fHookProvider\x12[\n" +
-	"\x10OnProviderLoaded\x12%.emqx.exhook.v3.ProviderLoadedRequest\x1a\x1e.emqx.exhook.v3.LoadedResponse\"\x00\x12]\n" +
-	"\x12OnProviderUnloaded\x12'.emqx.exhook.v3.ProviderUnloadedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12W\n" +
-	"\x0fOnClientConnect\x12$.emqx.exhook.v3.ClientConnectRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12W\n" +
-	"\x0fOnClientConnack\x12$.emqx.exhook.v3.ClientConnackRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12[\n" +
-	"\x11OnClientConnected\x12&.emqx.exhook.v3.ClientConnectedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12a\n" +
-	"\x14OnClientDisconnected\x12).emqx.exhook.v3.ClientDisconnectedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12c\n" +
-	"\x14OnClientAuthenticate\x12).emqx.exhook.v3.ClientAuthenticateRequest\x1a\x1e.emqx.exhook.v3.ValuedResponse\"\x00\x12]\n" +
-	"\x11OnClientAuthorize\x12&.emqx.exhook.v3.ClientAuthorizeRequest\x1a\x1e.emqx.exhook.v3.ValuedResponse\"\x00\x12[\n" +
-	"\x11OnClientSubscribe\x12&.emqx.exhook.v3.ClientSubscribeRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12_\n" +
-	"\x13OnClientUnsubscribe\x12(.emqx.exhook.v3.ClientUnsubscribeRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12Y\n" +
-	"\x10OnSessionCreated\x12%.emqx.exhook.v3.SessionCreatedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12_\n" +
-	"\x13OnSessionSubscribed\x12(.emqx.exhook.v3.SessionSubscribedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12c\n" +
-	"\x15OnSessionUnsubscribed\x12*.emqx.exhook.v3.SessionUnsubscribedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12Y\n" +
-	"\x10OnSessionResumed\x12%.emqx.exhook.v3.SessionResumedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12]\n" +
-	"\x12OnSessionDiscarded\x12'.emqx.exhook.v3.SessionDiscardedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12]\n" +
-	"\x12OnSessionTakenover\x12'.emqx.exhook.v3.SessionTakenoverRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12_\n" +
-	"\x13OnSessionTerminated\x12(.emqx.exhook.v3.SessionTerminatedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12[\n" +
-	"\x10OnMessagePublish\x12%.emqx.exhook.v3.MessagePublishRequest\x1a\x1e.emqx.exhook.v3.ValuedResponse\"\x00\x12]\n" +
-	"\x12OnMessageDelivered\x12'.emqx.exhook.v3.MessageDeliveredRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12Y\n" +
-	"\x10OnMessageDropped\x12%.emqx.exhook.v3.MessageDroppedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00\x12U\n" +
-	"\x0eOnMessageAcked\x12#.emqx.exhook.v3.MessageAckedRequest\x1a\x1c.emqx.exhook.v3.EmptySuccess\"\x00BI\n" +
-	"\x0eio.emqx.exhookB\x0fEmqxExHookProtoP\x01Z\x13emqx.io/grpc/exhook\xaa\x02\x0eEmqx.Exhook.V3b\x06proto3"
+	"\x10OnProviderLoaded\x12%.emqx.exhook.v2.ProviderLoadedRequest\x1a\x1e.emqx.exhook.v2.LoadedResponse\"\x00\x12]\n" +
+	"\x12OnProviderUnloaded\x12'.emqx.exhook.v2.ProviderUnloadedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12W\n" +
+	"\x0fOnClientConnect\x12$.emqx.exhook.v2.ClientConnectRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12W\n" +
+	"\x0fOnClientConnack\x12$.emqx.exhook.v2.ClientConnackRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12[\n" +
+	"\x11OnClientConnected\x12&.emqx.exhook.v2.ClientConnectedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12a\n" +
+	"\x14OnClientDisconnected\x12).emqx.exhook.v2.ClientDisconnectedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12c\n" +
+	"\x14OnClientAuthenticate\x12).emqx.exhook.v2.ClientAuthenticateRequest\x1a\x1e.emqx.exhook.v2.ValuedResponse\"\x00\x12]\n" +
+	"\x11OnClientAuthorize\x12&.emqx.exhook.v2.ClientAuthorizeRequest\x1a\x1e.emqx.exhook.v2.ValuedResponse\"\x00\x12[\n" +
+	"\x11OnClientSubscribe\x12&.emqx.exhook.v2.ClientSubscribeRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12_\n" +
+	"\x13OnClientUnsubscribe\x12(.emqx.exhook.v2.ClientUnsubscribeRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12Y\n" +
+	"\x10OnSessionCreated\x12%.emqx.exhook.v2.SessionCreatedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12_\n" +
+	"\x13OnSessionSubscribed\x12(.emqx.exhook.v2.SessionSubscribedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12c\n" +
+	"\x15OnSessionUnsubscribed\x12*.emqx.exhook.v2.SessionUnsubscribedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12Y\n" +
+	"\x10OnSessionResumed\x12%.emqx.exhook.v2.SessionResumedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12]\n" +
+	"\x12OnSessionDiscarded\x12'.emqx.exhook.v2.SessionDiscardedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12]\n" +
+	"\x12OnSessionTakenover\x12'.emqx.exhook.v2.SessionTakenoverRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12_\n" +
+	"\x13OnSessionTerminated\x12(.emqx.exhook.v2.SessionTerminatedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12[\n" +
+	"\x10OnMessagePublish\x12%.emqx.exhook.v2.MessagePublishRequest\x1a\x1e.emqx.exhook.v2.ValuedResponse\"\x00\x12]\n" +
+	"\x12OnMessageDelivered\x12'.emqx.exhook.v2.MessageDeliveredRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12Y\n" +
+	"\x10OnMessageDropped\x12%.emqx.exhook.v2.MessageDroppedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00\x12U\n" +
+	"\x0eOnMessageAcked\x12#.emqx.exhook.v2.MessageAckedRequest\x1a\x1c.emqx.exhook.v2.EmptySuccess\"\x00BI\n" +
+	"\x0eio.emqx.exhookB\x0fEmqxExHookProtoP\x01Z\x13emqx.io/grpc/exhook\xaa\x02\x0eEmqx.Exhook.V2b\x06proto3"
 
 var (
 	file_proto_exhook_proto_rawDescOnce sync.Once
@@ -2623,153 +2562,147 @@ func file_proto_exhook_proto_rawDescGZIP() []byte {
 var file_proto_exhook_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_proto_exhook_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
 var file_proto_exhook_proto_goTypes = []any{
-	(ClientAuthorizeRequest_AuthorizeReqType)(0), // 0: emqx.exhook.v3.ClientAuthorizeRequest.AuthorizeReqType
-	(ValuedResponse_ResponsedType)(0),            // 1: emqx.exhook.v3.ValuedResponse.ResponsedType
-	(*ProviderLoadedRequest)(nil),                // 2: emqx.exhook.v3.ProviderLoadedRequest
-	(*ProviderUnloadedRequest)(nil),              // 3: emqx.exhook.v3.ProviderUnloadedRequest
-	(*ClientConnectRequest)(nil),                 // 4: emqx.exhook.v3.ClientConnectRequest
-	(*ClientConnackRequest)(nil),                 // 5: emqx.exhook.v3.ClientConnackRequest
-	(*ClientConnectedRequest)(nil),               // 6: emqx.exhook.v3.ClientConnectedRequest
-	(*ClientDisconnectedRequest)(nil),            // 7: emqx.exhook.v3.ClientDisconnectedRequest
-	(*ClientAuthenticateRequest)(nil),            // 8: emqx.exhook.v3.ClientAuthenticateRequest
-	(*ClientAuthorizeRequest)(nil),               // 9: emqx.exhook.v3.ClientAuthorizeRequest
-	(*ClientSubscribeRequest)(nil),               // 10: emqx.exhook.v3.ClientSubscribeRequest
-	(*ClientUnsubscribeRequest)(nil),             // 11: emqx.exhook.v3.ClientUnsubscribeRequest
-	(*SessionCreatedRequest)(nil),                // 12: emqx.exhook.v3.SessionCreatedRequest
-	(*SessionSubscribedRequest)(nil),             // 13: emqx.exhook.v3.SessionSubscribedRequest
-	(*SessionUnsubscribedRequest)(nil),           // 14: emqx.exhook.v3.SessionUnsubscribedRequest
-	(*SessionResumedRequest)(nil),                // 15: emqx.exhook.v3.SessionResumedRequest
-	(*SessionDiscardedRequest)(nil),              // 16: emqx.exhook.v3.SessionDiscardedRequest
-	(*SessionTakenoverRequest)(nil),              // 17: emqx.exhook.v3.SessionTakenoverRequest
-	(*SessionTerminatedRequest)(nil),             // 18: emqx.exhook.v3.SessionTerminatedRequest
-	(*MessagePublishRequest)(nil),                // 19: emqx.exhook.v3.MessagePublishRequest
-	(*MessageDeliveredRequest)(nil),              // 20: emqx.exhook.v3.MessageDeliveredRequest
-	(*MessageDroppedRequest)(nil),                // 21: emqx.exhook.v3.MessageDroppedRequest
-	(*MessageAckedRequest)(nil),                  // 22: emqx.exhook.v3.MessageAckedRequest
-	(*LoadedResponse)(nil),                       // 23: emqx.exhook.v3.LoadedResponse
-	(*ValuedResponse)(nil),                       // 24: emqx.exhook.v3.ValuedResponse
-	(*EmptySuccess)(nil),                         // 25: emqx.exhook.v3.EmptySuccess
-	(*BrokerInfo)(nil),                           // 26: emqx.exhook.v3.BrokerInfo
-	(*HookSpec)(nil),                             // 27: emqx.exhook.v3.HookSpec
-	(*ConnInfo)(nil),                             // 28: emqx.exhook.v3.ConnInfo
-	(*ClientInfo)(nil),                           // 29: emqx.exhook.v3.ClientInfo
-	(*Message)(nil),                              // 30: emqx.exhook.v3.Message
-	(*Property)(nil),                             // 31: emqx.exhook.v3.Property
-	(*TopicFilter)(nil),                          // 32: emqx.exhook.v3.TopicFilter
-	(*SubOpts)(nil),                              // 33: emqx.exhook.v3.SubOpts
-	(*RequestMeta)(nil),                          // 34: emqx.exhook.v3.RequestMeta
-	nil,                                          // 35: emqx.exhook.v3.Message.HeadersEntry
+	(ClientAuthorizeRequest_AuthorizeReqType)(0), // 0: emqx.exhook.v2.ClientAuthorizeRequest.AuthorizeReqType
+	(ValuedResponse_ResponsedType)(0),            // 1: emqx.exhook.v2.ValuedResponse.ResponsedType
+	(*ProviderLoadedRequest)(nil),                // 2: emqx.exhook.v2.ProviderLoadedRequest
+	(*ProviderUnloadedRequest)(nil),              // 3: emqx.exhook.v2.ProviderUnloadedRequest
+	(*ClientConnectRequest)(nil),                 // 4: emqx.exhook.v2.ClientConnectRequest
+	(*ClientConnackRequest)(nil),                 // 5: emqx.exhook.v2.ClientConnackRequest
+	(*ClientConnectedRequest)(nil),               // 6: emqx.exhook.v2.ClientConnectedRequest
+	(*ClientDisconnectedRequest)(nil),            // 7: emqx.exhook.v2.ClientDisconnectedRequest
+	(*ClientAuthenticateRequest)(nil),            // 8: emqx.exhook.v2.ClientAuthenticateRequest
+	(*ClientAuthorizeRequest)(nil),               // 9: emqx.exhook.v2.ClientAuthorizeRequest
+	(*ClientSubscribeRequest)(nil),               // 10: emqx.exhook.v2.ClientSubscribeRequest
+	(*ClientUnsubscribeRequest)(nil),             // 11: emqx.exhook.v2.ClientUnsubscribeRequest
+	(*SessionCreatedRequest)(nil),                // 12: emqx.exhook.v2.SessionCreatedRequest
+	(*SessionSubscribedRequest)(nil),             // 13: emqx.exhook.v2.SessionSubscribedRequest
+	(*SessionUnsubscribedRequest)(nil),           // 14: emqx.exhook.v2.SessionUnsubscribedRequest
+	(*SessionResumedRequest)(nil),                // 15: emqx.exhook.v2.SessionResumedRequest
+	(*SessionDiscardedRequest)(nil),              // 16: emqx.exhook.v2.SessionDiscardedRequest
+	(*SessionTakenoverRequest)(nil),              // 17: emqx.exhook.v2.SessionTakenoverRequest
+	(*SessionTerminatedRequest)(nil),             // 18: emqx.exhook.v2.SessionTerminatedRequest
+	(*MessagePublishRequest)(nil),                // 19: emqx.exhook.v2.MessagePublishRequest
+	(*MessageDeliveredRequest)(nil),              // 20: emqx.exhook.v2.MessageDeliveredRequest
+	(*MessageDroppedRequest)(nil),                // 21: emqx.exhook.v2.MessageDroppedRequest
+	(*MessageAckedRequest)(nil),                  // 22: emqx.exhook.v2.MessageAckedRequest
+	(*LoadedResponse)(nil),                       // 23: emqx.exhook.v2.LoadedResponse
+	(*ValuedResponse)(nil),                       // 24: emqx.exhook.v2.ValuedResponse
+	(*EmptySuccess)(nil),                         // 25: emqx.exhook.v2.EmptySuccess
+	(*BrokerInfo)(nil),                           // 26: emqx.exhook.v2.BrokerInfo
+	(*HookSpec)(nil),                             // 27: emqx.exhook.v2.HookSpec
+	(*ConnInfo)(nil),                             // 28: emqx.exhook.v2.ConnInfo
+	(*ClientInfo)(nil),                           // 29: emqx.exhook.v2.ClientInfo
+	(*Message)(nil),                              // 30: emqx.exhook.v2.Message
+	(*Property)(nil),                             // 31: emqx.exhook.v2.Property
+	(*TopicFilter)(nil),                          // 32: emqx.exhook.v2.TopicFilter
+	(*SubOpts)(nil),                              // 33: emqx.exhook.v2.SubOpts
+	(*RequestMeta)(nil),                          // 34: emqx.exhook.v2.RequestMeta
+	nil,                                          // 35: emqx.exhook.v2.Message.HeadersEntry
 }
 var file_proto_exhook_proto_depIdxs = []int32{
-	26, // 0: emqx.exhook.v3.ProviderLoadedRequest.broker:type_name -> emqx.exhook.v3.BrokerInfo
-	34, // 1: emqx.exhook.v3.ProviderLoadedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	34, // 2: emqx.exhook.v3.ProviderUnloadedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	28, // 3: emqx.exhook.v3.ClientConnectRequest.conninfo:type_name -> emqx.exhook.v3.ConnInfo
-	31, // 4: emqx.exhook.v3.ClientConnectRequest.props:type_name -> emqx.exhook.v3.Property
-	34, // 5: emqx.exhook.v3.ClientConnectRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	31, // 6: emqx.exhook.v3.ClientConnectRequest.user_props:type_name -> emqx.exhook.v3.Property
-	28, // 7: emqx.exhook.v3.ClientConnackRequest.conninfo:type_name -> emqx.exhook.v3.ConnInfo
-	31, // 8: emqx.exhook.v3.ClientConnackRequest.props:type_name -> emqx.exhook.v3.Property
-	34, // 9: emqx.exhook.v3.ClientConnackRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	31, // 10: emqx.exhook.v3.ClientConnackRequest.user_props:type_name -> emqx.exhook.v3.Property
-	29, // 11: emqx.exhook.v3.ClientConnectedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 12: emqx.exhook.v3.ClientConnectedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 13: emqx.exhook.v3.ClientDisconnectedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 14: emqx.exhook.v3.ClientDisconnectedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 15: emqx.exhook.v3.ClientAuthenticateRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 16: emqx.exhook.v3.ClientAuthenticateRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 17: emqx.exhook.v3.ClientAuthorizeRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	0,  // 18: emqx.exhook.v3.ClientAuthorizeRequest.type:type_name -> emqx.exhook.v3.ClientAuthorizeRequest.AuthorizeReqType
-	34, // 19: emqx.exhook.v3.ClientAuthorizeRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 20: emqx.exhook.v3.ClientSubscribeRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	31, // 21: emqx.exhook.v3.ClientSubscribeRequest.props:type_name -> emqx.exhook.v3.Property
-	32, // 22: emqx.exhook.v3.ClientSubscribeRequest.topic_filters:type_name -> emqx.exhook.v3.TopicFilter
-	34, // 23: emqx.exhook.v3.ClientSubscribeRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	31, // 24: emqx.exhook.v3.ClientSubscribeRequest.user_props:type_name -> emqx.exhook.v3.Property
-	29, // 25: emqx.exhook.v3.ClientUnsubscribeRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	31, // 26: emqx.exhook.v3.ClientUnsubscribeRequest.props:type_name -> emqx.exhook.v3.Property
-	32, // 27: emqx.exhook.v3.ClientUnsubscribeRequest.topic_filters:type_name -> emqx.exhook.v3.TopicFilter
-	34, // 28: emqx.exhook.v3.ClientUnsubscribeRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	31, // 29: emqx.exhook.v3.ClientUnsubscribeRequest.user_props:type_name -> emqx.exhook.v3.Property
-	29, // 30: emqx.exhook.v3.SessionCreatedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 31: emqx.exhook.v3.SessionCreatedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 32: emqx.exhook.v3.SessionSubscribedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	33, // 33: emqx.exhook.v3.SessionSubscribedRequest.subopts:type_name -> emqx.exhook.v3.SubOpts
-	34, // 34: emqx.exhook.v3.SessionSubscribedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 35: emqx.exhook.v3.SessionUnsubscribedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 36: emqx.exhook.v3.SessionUnsubscribedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 37: emqx.exhook.v3.SessionResumedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 38: emqx.exhook.v3.SessionResumedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 39: emqx.exhook.v3.SessionDiscardedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 40: emqx.exhook.v3.SessionDiscardedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 41: emqx.exhook.v3.SessionTakenoverRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 42: emqx.exhook.v3.SessionTakenoverRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 43: emqx.exhook.v3.SessionTerminatedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	34, // 44: emqx.exhook.v3.SessionTerminatedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	30, // 45: emqx.exhook.v3.MessagePublishRequest.message:type_name -> emqx.exhook.v3.Message
-	34, // 46: emqx.exhook.v3.MessagePublishRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	31, // 47: emqx.exhook.v3.MessagePublishRequest.props:type_name -> emqx.exhook.v3.Property
-	31, // 48: emqx.exhook.v3.MessagePublishRequest.user_props:type_name -> emqx.exhook.v3.Property
-	29, // 49: emqx.exhook.v3.MessageDeliveredRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	30, // 50: emqx.exhook.v3.MessageDeliveredRequest.message:type_name -> emqx.exhook.v3.Message
-	34, // 51: emqx.exhook.v3.MessageDeliveredRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	30, // 52: emqx.exhook.v3.MessageDroppedRequest.message:type_name -> emqx.exhook.v3.Message
-	34, // 53: emqx.exhook.v3.MessageDroppedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	29, // 54: emqx.exhook.v3.MessageAckedRequest.clientinfo:type_name -> emqx.exhook.v3.ClientInfo
-	30, // 55: emqx.exhook.v3.MessageAckedRequest.message:type_name -> emqx.exhook.v3.Message
-	34, // 56: emqx.exhook.v3.MessageAckedRequest.meta:type_name -> emqx.exhook.v3.RequestMeta
-	27, // 57: emqx.exhook.v3.LoadedResponse.hooks:type_name -> emqx.exhook.v3.HookSpec
-	1,  // 58: emqx.exhook.v3.ValuedResponse.type:type_name -> emqx.exhook.v3.ValuedResponse.ResponsedType
-	30, // 59: emqx.exhook.v3.ValuedResponse.message:type_name -> emqx.exhook.v3.Message
-	35, // 60: emqx.exhook.v3.Message.headers:type_name -> emqx.exhook.v3.Message.HeadersEntry
-	33, // 61: emqx.exhook.v3.TopicFilter.subopts:type_name -> emqx.exhook.v3.SubOpts
-	2,  // 62: emqx.exhook.v3.HookProvider.OnProviderLoaded:input_type -> emqx.exhook.v3.ProviderLoadedRequest
-	3,  // 63: emqx.exhook.v3.HookProvider.OnProviderUnloaded:input_type -> emqx.exhook.v3.ProviderUnloadedRequest
-	4,  // 64: emqx.exhook.v3.HookProvider.OnClientConnect:input_type -> emqx.exhook.v3.ClientConnectRequest
-	5,  // 65: emqx.exhook.v3.HookProvider.OnClientConnack:input_type -> emqx.exhook.v3.ClientConnackRequest
-	6,  // 66: emqx.exhook.v3.HookProvider.OnClientConnected:input_type -> emqx.exhook.v3.ClientConnectedRequest
-	7,  // 67: emqx.exhook.v3.HookProvider.OnClientDisconnected:input_type -> emqx.exhook.v3.ClientDisconnectedRequest
-	8,  // 68: emqx.exhook.v3.HookProvider.OnClientAuthenticate:input_type -> emqx.exhook.v3.ClientAuthenticateRequest
-	9,  // 69: emqx.exhook.v3.HookProvider.OnClientAuthorize:input_type -> emqx.exhook.v3.ClientAuthorizeRequest
-	10, // 70: emqx.exhook.v3.HookProvider.OnClientSubscribe:input_type -> emqx.exhook.v3.ClientSubscribeRequest
-	11, // 71: emqx.exhook.v3.HookProvider.OnClientUnsubscribe:input_type -> emqx.exhook.v3.ClientUnsubscribeRequest
-	12, // 72: emqx.exhook.v3.HookProvider.OnSessionCreated:input_type -> emqx.exhook.v3.SessionCreatedRequest
-	13, // 73: emqx.exhook.v3.HookProvider.OnSessionSubscribed:input_type -> emqx.exhook.v3.SessionSubscribedRequest
-	14, // 74: emqx.exhook.v3.HookProvider.OnSessionUnsubscribed:input_type -> emqx.exhook.v3.SessionUnsubscribedRequest
-	15, // 75: emqx.exhook.v3.HookProvider.OnSessionResumed:input_type -> emqx.exhook.v3.SessionResumedRequest
-	16, // 76: emqx.exhook.v3.HookProvider.OnSessionDiscarded:input_type -> emqx.exhook.v3.SessionDiscardedRequest
-	17, // 77: emqx.exhook.v3.HookProvider.OnSessionTakenover:input_type -> emqx.exhook.v3.SessionTakenoverRequest
-	18, // 78: emqx.exhook.v3.HookProvider.OnSessionTerminated:input_type -> emqx.exhook.v3.SessionTerminatedRequest
-	19, // 79: emqx.exhook.v3.HookProvider.OnMessagePublish:input_type -> emqx.exhook.v3.MessagePublishRequest
-	20, // 80: emqx.exhook.v3.HookProvider.OnMessageDelivered:input_type -> emqx.exhook.v3.MessageDeliveredRequest
-	21, // 81: emqx.exhook.v3.HookProvider.OnMessageDropped:input_type -> emqx.exhook.v3.MessageDroppedRequest
-	22, // 82: emqx.exhook.v3.HookProvider.OnMessageAcked:input_type -> emqx.exhook.v3.MessageAckedRequest
-	23, // 83: emqx.exhook.v3.HookProvider.OnProviderLoaded:output_type -> emqx.exhook.v3.LoadedResponse
-	25, // 84: emqx.exhook.v3.HookProvider.OnProviderUnloaded:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 85: emqx.exhook.v3.HookProvider.OnClientConnect:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 86: emqx.exhook.v3.HookProvider.OnClientConnack:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 87: emqx.exhook.v3.HookProvider.OnClientConnected:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 88: emqx.exhook.v3.HookProvider.OnClientDisconnected:output_type -> emqx.exhook.v3.EmptySuccess
-	24, // 89: emqx.exhook.v3.HookProvider.OnClientAuthenticate:output_type -> emqx.exhook.v3.ValuedResponse
-	24, // 90: emqx.exhook.v3.HookProvider.OnClientAuthorize:output_type -> emqx.exhook.v3.ValuedResponse
-	25, // 91: emqx.exhook.v3.HookProvider.OnClientSubscribe:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 92: emqx.exhook.v3.HookProvider.OnClientUnsubscribe:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 93: emqx.exhook.v3.HookProvider.OnSessionCreated:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 94: emqx.exhook.v3.HookProvider.OnSessionSubscribed:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 95: emqx.exhook.v3.HookProvider.OnSessionUnsubscribed:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 96: emqx.exhook.v3.HookProvider.OnSessionResumed:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 97: emqx.exhook.v3.HookProvider.OnSessionDiscarded:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 98: emqx.exhook.v3.HookProvider.OnSessionTakenover:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 99: emqx.exhook.v3.HookProvider.OnSessionTerminated:output_type -> emqx.exhook.v3.EmptySuccess
-	24, // 100: emqx.exhook.v3.HookProvider.OnMessagePublish:output_type -> emqx.exhook.v3.ValuedResponse
-	25, // 101: emqx.exhook.v3.HookProvider.OnMessageDelivered:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 102: emqx.exhook.v3.HookProvider.OnMessageDropped:output_type -> emqx.exhook.v3.EmptySuccess
-	25, // 103: emqx.exhook.v3.HookProvider.OnMessageAcked:output_type -> emqx.exhook.v3.EmptySuccess
-	83, // [83:104] is the sub-list for method output_type
-	62, // [62:83] is the sub-list for method input_type
-	62, // [62:62] is the sub-list for extension type_name
-	62, // [62:62] is the sub-list for extension extendee
-	0,  // [0:62] is the sub-list for field type_name
+	26, // 0: emqx.exhook.v2.ProviderLoadedRequest.broker:type_name -> emqx.exhook.v2.BrokerInfo
+	34, // 1: emqx.exhook.v2.ProviderLoadedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	34, // 2: emqx.exhook.v2.ProviderUnloadedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	28, // 3: emqx.exhook.v2.ClientConnectRequest.conninfo:type_name -> emqx.exhook.v2.ConnInfo
+	31, // 4: emqx.exhook.v2.ClientConnectRequest.props:type_name -> emqx.exhook.v2.Property
+	34, // 5: emqx.exhook.v2.ClientConnectRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	28, // 6: emqx.exhook.v2.ClientConnackRequest.conninfo:type_name -> emqx.exhook.v2.ConnInfo
+	31, // 7: emqx.exhook.v2.ClientConnackRequest.props:type_name -> emqx.exhook.v2.Property
+	34, // 8: emqx.exhook.v2.ClientConnackRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 9: emqx.exhook.v2.ClientConnectedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 10: emqx.exhook.v2.ClientConnectedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 11: emqx.exhook.v2.ClientDisconnectedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 12: emqx.exhook.v2.ClientDisconnectedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 13: emqx.exhook.v2.ClientAuthenticateRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 14: emqx.exhook.v2.ClientAuthenticateRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 15: emqx.exhook.v2.ClientAuthorizeRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	0,  // 16: emqx.exhook.v2.ClientAuthorizeRequest.type:type_name -> emqx.exhook.v2.ClientAuthorizeRequest.AuthorizeReqType
+	34, // 17: emqx.exhook.v2.ClientAuthorizeRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 18: emqx.exhook.v2.ClientSubscribeRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	31, // 19: emqx.exhook.v2.ClientSubscribeRequest.props:type_name -> emqx.exhook.v2.Property
+	32, // 20: emqx.exhook.v2.ClientSubscribeRequest.topic_filters:type_name -> emqx.exhook.v2.TopicFilter
+	34, // 21: emqx.exhook.v2.ClientSubscribeRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 22: emqx.exhook.v2.ClientUnsubscribeRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	31, // 23: emqx.exhook.v2.ClientUnsubscribeRequest.props:type_name -> emqx.exhook.v2.Property
+	32, // 24: emqx.exhook.v2.ClientUnsubscribeRequest.topic_filters:type_name -> emqx.exhook.v2.TopicFilter
+	34, // 25: emqx.exhook.v2.ClientUnsubscribeRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 26: emqx.exhook.v2.SessionCreatedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 27: emqx.exhook.v2.SessionCreatedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 28: emqx.exhook.v2.SessionSubscribedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	33, // 29: emqx.exhook.v2.SessionSubscribedRequest.subopts:type_name -> emqx.exhook.v2.SubOpts
+	34, // 30: emqx.exhook.v2.SessionSubscribedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 31: emqx.exhook.v2.SessionUnsubscribedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 32: emqx.exhook.v2.SessionUnsubscribedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 33: emqx.exhook.v2.SessionResumedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 34: emqx.exhook.v2.SessionResumedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 35: emqx.exhook.v2.SessionDiscardedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 36: emqx.exhook.v2.SessionDiscardedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 37: emqx.exhook.v2.SessionTakenoverRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 38: emqx.exhook.v2.SessionTakenoverRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 39: emqx.exhook.v2.SessionTerminatedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	34, // 40: emqx.exhook.v2.SessionTerminatedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	30, // 41: emqx.exhook.v2.MessagePublishRequest.message:type_name -> emqx.exhook.v2.Message
+	34, // 42: emqx.exhook.v2.MessagePublishRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 43: emqx.exhook.v2.MessageDeliveredRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	30, // 44: emqx.exhook.v2.MessageDeliveredRequest.message:type_name -> emqx.exhook.v2.Message
+	34, // 45: emqx.exhook.v2.MessageDeliveredRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	30, // 46: emqx.exhook.v2.MessageDroppedRequest.message:type_name -> emqx.exhook.v2.Message
+	34, // 47: emqx.exhook.v2.MessageDroppedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	29, // 48: emqx.exhook.v2.MessageAckedRequest.clientinfo:type_name -> emqx.exhook.v2.ClientInfo
+	30, // 49: emqx.exhook.v2.MessageAckedRequest.message:type_name -> emqx.exhook.v2.Message
+	34, // 50: emqx.exhook.v2.MessageAckedRequest.meta:type_name -> emqx.exhook.v2.RequestMeta
+	27, // 51: emqx.exhook.v2.LoadedResponse.hooks:type_name -> emqx.exhook.v2.HookSpec
+	1,  // 52: emqx.exhook.v2.ValuedResponse.type:type_name -> emqx.exhook.v2.ValuedResponse.ResponsedType
+	30, // 53: emqx.exhook.v2.ValuedResponse.message:type_name -> emqx.exhook.v2.Message
+	35, // 54: emqx.exhook.v2.Message.headers:type_name -> emqx.exhook.v2.Message.HeadersEntry
+	33, // 55: emqx.exhook.v2.TopicFilter.subopts:type_name -> emqx.exhook.v2.SubOpts
+	2,  // 56: emqx.exhook.v2.HookProvider.OnProviderLoaded:input_type -> emqx.exhook.v2.ProviderLoadedRequest
+	3,  // 57: emqx.exhook.v2.HookProvider.OnProviderUnloaded:input_type -> emqx.exhook.v2.ProviderUnloadedRequest
+	4,  // 58: emqx.exhook.v2.HookProvider.OnClientConnect:input_type -> emqx.exhook.v2.ClientConnectRequest
+	5,  // 59: emqx.exhook.v2.HookProvider.OnClientConnack:input_type -> emqx.exhook.v2.ClientConnackRequest
+	6,  // 60: emqx.exhook.v2.HookProvider.OnClientConnected:input_type -> emqx.exhook.v2.ClientConnectedRequest
+	7,  // 61: emqx.exhook.v2.HookProvider.OnClientDisconnected:input_type -> emqx.exhook.v2.ClientDisconnectedRequest
+	8,  // 62: emqx.exhook.v2.HookProvider.OnClientAuthenticate:input_type -> emqx.exhook.v2.ClientAuthenticateRequest
+	9,  // 63: emqx.exhook.v2.HookProvider.OnClientAuthorize:input_type -> emqx.exhook.v2.ClientAuthorizeRequest
+	10, // 64: emqx.exhook.v2.HookProvider.OnClientSubscribe:input_type -> emqx.exhook.v2.ClientSubscribeRequest
+	11, // 65: emqx.exhook.v2.HookProvider.OnClientUnsubscribe:input_type -> emqx.exhook.v2.ClientUnsubscribeRequest
+	12, // 66: emqx.exhook.v2.HookProvider.OnSessionCreated:input_type -> emqx.exhook.v2.SessionCreatedRequest
+	13, // 67: emqx.exhook.v2.HookProvider.OnSessionSubscribed:input_type -> emqx.exhook.v2.SessionSubscribedRequest
+	14, // 68: emqx.exhook.v2.HookProvider.OnSessionUnsubscribed:input_type -> emqx.exhook.v2.SessionUnsubscribedRequest
+	15, // 69: emqx.exhook.v2.HookProvider.OnSessionResumed:input_type -> emqx.exhook.v2.SessionResumedRequest
+	16, // 70: emqx.exhook.v2.HookProvider.OnSessionDiscarded:input_type -> emqx.exhook.v2.SessionDiscardedRequest
+	17, // 71: emqx.exhook.v2.HookProvider.OnSessionTakenover:input_type -> emqx.exhook.v2.SessionTakenoverRequest
+	18, // 72: emqx.exhook.v2.HookProvider.OnSessionTerminated:input_type -> emqx.exhook.v2.SessionTerminatedRequest
+	19, // 73: emqx.exhook.v2.HookProvider.OnMessagePublish:input_type -> emqx.exhook.v2.MessagePublishRequest
+	20, // 74: emqx.exhook.v2.HookProvider.OnMessageDelivered:input_type -> emqx.exhook.v2.MessageDeliveredRequest
+	21, // 75: emqx.exhook.v2.HookProvider.OnMessageDropped:input_type -> emqx.exhook.v2.MessageDroppedRequest
+	22, // 76: emqx.exhook.v2.HookProvider.OnMessageAcked:input_type -> emqx.exhook.v2.MessageAckedRequest
+	23, // 77: emqx.exhook.v2.HookProvider.OnProviderLoaded:output_type -> emqx.exhook.v2.LoadedResponse
+	25, // 78: emqx.exhook.v2.HookProvider.OnProviderUnloaded:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 79: emqx.exhook.v2.HookProvider.OnClientConnect:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 80: emqx.exhook.v2.HookProvider.OnClientConnack:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 81: emqx.exhook.v2.HookProvider.OnClientConnected:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 82: emqx.exhook.v2.HookProvider.OnClientDisconnected:output_type -> emqx.exhook.v2.EmptySuccess
+	24, // 83: emqx.exhook.v2.HookProvider.OnClientAuthenticate:output_type -> emqx.exhook.v2.ValuedResponse
+	24, // 84: emqx.exhook.v2.HookProvider.OnClientAuthorize:output_type -> emqx.exhook.v2.ValuedResponse
+	25, // 85: emqx.exhook.v2.HookProvider.OnClientSubscribe:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 86: emqx.exhook.v2.HookProvider.OnClientUnsubscribe:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 87: emqx.exhook.v2.HookProvider.OnSessionCreated:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 88: emqx.exhook.v2.HookProvider.OnSessionSubscribed:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 89: emqx.exhook.v2.HookProvider.OnSessionUnsubscribed:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 90: emqx.exhook.v2.HookProvider.OnSessionResumed:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 91: emqx.exhook.v2.HookProvider.OnSessionDiscarded:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 92: emqx.exhook.v2.HookProvider.OnSessionTakenover:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 93: emqx.exhook.v2.HookProvider.OnSessionTerminated:output_type -> emqx.exhook.v2.EmptySuccess
+	24, // 94: emqx.exhook.v2.HookProvider.OnMessagePublish:output_type -> emqx.exhook.v2.ValuedResponse
+	25, // 95: emqx.exhook.v2.HookProvider.OnMessageDelivered:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 96: emqx.exhook.v2.HookProvider.OnMessageDropped:output_type -> emqx.exhook.v2.EmptySuccess
+	25, // 97: emqx.exhook.v2.HookProvider.OnMessageAcked:output_type -> emqx.exhook.v2.EmptySuccess
+	77, // [77:98] is the sub-list for method output_type
+	56, // [56:77] is the sub-list for method input_type
+	56, // [56:56] is the sub-list for extension type_name
+	56, // [56:56] is the sub-list for extension extendee
+	0,  // [0:56] is the sub-list for field type_name
 }
 
 func init() { file_proto_exhook_proto_init() }

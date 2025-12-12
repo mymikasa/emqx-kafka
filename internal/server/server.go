@@ -40,3 +40,17 @@ func (s *ExHookServer) OnMessagePublish(ctx context.Context, req *pb.MessagePubl
 		},
 	}, nil
 }
+
+func (s *ExHookServer) OnProviderLoaded(ctx context.Context, _ *pb.ProviderLoadedRequest) (*pb.LoadedResponse, error) {
+	return &pb.LoadedResponse{
+		Hooks: []*pb.HookSpec{
+			{
+				Name: "message.publish",
+			},
+		},
+	}, nil
+}
+
+func (s *ExHookServer) OnProviderUnloaded(ctx context.Context, _ *pb.ProviderUnloadedRequest) (*pb.EmptySuccess, error) {
+	return &pb.EmptySuccess{}, nil
+}

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2020-2025 EMQ Technologies Co., Ltd. All Rights Reserved.
+// Copyright (c) 2020-2023 EMQ Technologies Co., Ltd. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,10 +20,8 @@
 // - protoc             (unknown)
 // source: proto/exhook.proto
 
-// Please make sure the exhook proto version is compatible
-// with the EMQX version
-// v3: EMQX 5.9.0+
-// v2: EMQX 5.0-5.8.x
+// The exhook proto version should be fixed as `v2` in EMQX v5.x
+// to make sure the exhook proto version is compatible
 
 package exhook
 
@@ -40,27 +38,27 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	HookProvider_OnProviderLoaded_FullMethodName      = "/emqx.exhook.v3.HookProvider/OnProviderLoaded"
-	HookProvider_OnProviderUnloaded_FullMethodName    = "/emqx.exhook.v3.HookProvider/OnProviderUnloaded"
-	HookProvider_OnClientConnect_FullMethodName       = "/emqx.exhook.v3.HookProvider/OnClientConnect"
-	HookProvider_OnClientConnack_FullMethodName       = "/emqx.exhook.v3.HookProvider/OnClientConnack"
-	HookProvider_OnClientConnected_FullMethodName     = "/emqx.exhook.v3.HookProvider/OnClientConnected"
-	HookProvider_OnClientDisconnected_FullMethodName  = "/emqx.exhook.v3.HookProvider/OnClientDisconnected"
-	HookProvider_OnClientAuthenticate_FullMethodName  = "/emqx.exhook.v3.HookProvider/OnClientAuthenticate"
-	HookProvider_OnClientAuthorize_FullMethodName     = "/emqx.exhook.v3.HookProvider/OnClientAuthorize"
-	HookProvider_OnClientSubscribe_FullMethodName     = "/emqx.exhook.v3.HookProvider/OnClientSubscribe"
-	HookProvider_OnClientUnsubscribe_FullMethodName   = "/emqx.exhook.v3.HookProvider/OnClientUnsubscribe"
-	HookProvider_OnSessionCreated_FullMethodName      = "/emqx.exhook.v3.HookProvider/OnSessionCreated"
-	HookProvider_OnSessionSubscribed_FullMethodName   = "/emqx.exhook.v3.HookProvider/OnSessionSubscribed"
-	HookProvider_OnSessionUnsubscribed_FullMethodName = "/emqx.exhook.v3.HookProvider/OnSessionUnsubscribed"
-	HookProvider_OnSessionResumed_FullMethodName      = "/emqx.exhook.v3.HookProvider/OnSessionResumed"
-	HookProvider_OnSessionDiscarded_FullMethodName    = "/emqx.exhook.v3.HookProvider/OnSessionDiscarded"
-	HookProvider_OnSessionTakenover_FullMethodName    = "/emqx.exhook.v3.HookProvider/OnSessionTakenover"
-	HookProvider_OnSessionTerminated_FullMethodName   = "/emqx.exhook.v3.HookProvider/OnSessionTerminated"
-	HookProvider_OnMessagePublish_FullMethodName      = "/emqx.exhook.v3.HookProvider/OnMessagePublish"
-	HookProvider_OnMessageDelivered_FullMethodName    = "/emqx.exhook.v3.HookProvider/OnMessageDelivered"
-	HookProvider_OnMessageDropped_FullMethodName      = "/emqx.exhook.v3.HookProvider/OnMessageDropped"
-	HookProvider_OnMessageAcked_FullMethodName        = "/emqx.exhook.v3.HookProvider/OnMessageAcked"
+	HookProvider_OnProviderLoaded_FullMethodName      = "/emqx.exhook.v2.HookProvider/OnProviderLoaded"
+	HookProvider_OnProviderUnloaded_FullMethodName    = "/emqx.exhook.v2.HookProvider/OnProviderUnloaded"
+	HookProvider_OnClientConnect_FullMethodName       = "/emqx.exhook.v2.HookProvider/OnClientConnect"
+	HookProvider_OnClientConnack_FullMethodName       = "/emqx.exhook.v2.HookProvider/OnClientConnack"
+	HookProvider_OnClientConnected_FullMethodName     = "/emqx.exhook.v2.HookProvider/OnClientConnected"
+	HookProvider_OnClientDisconnected_FullMethodName  = "/emqx.exhook.v2.HookProvider/OnClientDisconnected"
+	HookProvider_OnClientAuthenticate_FullMethodName  = "/emqx.exhook.v2.HookProvider/OnClientAuthenticate"
+	HookProvider_OnClientAuthorize_FullMethodName     = "/emqx.exhook.v2.HookProvider/OnClientAuthorize"
+	HookProvider_OnClientSubscribe_FullMethodName     = "/emqx.exhook.v2.HookProvider/OnClientSubscribe"
+	HookProvider_OnClientUnsubscribe_FullMethodName   = "/emqx.exhook.v2.HookProvider/OnClientUnsubscribe"
+	HookProvider_OnSessionCreated_FullMethodName      = "/emqx.exhook.v2.HookProvider/OnSessionCreated"
+	HookProvider_OnSessionSubscribed_FullMethodName   = "/emqx.exhook.v2.HookProvider/OnSessionSubscribed"
+	HookProvider_OnSessionUnsubscribed_FullMethodName = "/emqx.exhook.v2.HookProvider/OnSessionUnsubscribed"
+	HookProvider_OnSessionResumed_FullMethodName      = "/emqx.exhook.v2.HookProvider/OnSessionResumed"
+	HookProvider_OnSessionDiscarded_FullMethodName    = "/emqx.exhook.v2.HookProvider/OnSessionDiscarded"
+	HookProvider_OnSessionTakenover_FullMethodName    = "/emqx.exhook.v2.HookProvider/OnSessionTakenover"
+	HookProvider_OnSessionTerminated_FullMethodName   = "/emqx.exhook.v2.HookProvider/OnSessionTerminated"
+	HookProvider_OnMessagePublish_FullMethodName      = "/emqx.exhook.v2.HookProvider/OnMessagePublish"
+	HookProvider_OnMessageDelivered_FullMethodName    = "/emqx.exhook.v2.HookProvider/OnMessageDelivered"
+	HookProvider_OnMessageDropped_FullMethodName      = "/emqx.exhook.v2.HookProvider/OnMessageDropped"
+	HookProvider_OnMessageAcked_FullMethodName        = "/emqx.exhook.v2.HookProvider/OnMessageAcked"
 )
 
 // HookProviderClient is the client API for HookProvider service.
@@ -809,7 +807,7 @@ func _HookProvider_OnMessageAcked_Handler(srv interface{}, ctx context.Context, 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var HookProvider_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "emqx.exhook.v3.HookProvider",
+	ServiceName: "emqx.exhook.v2.HookProvider",
 	HandlerType: (*HookProviderServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
