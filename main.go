@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
-
 func main() {
-	fmt.Print("Hello World")
+	bridge := InitBridge()
+	err := bridge.Start(":9999")
+	if err != nil {
+		panic(err)
+	}
 }
